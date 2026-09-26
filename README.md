@@ -1,4 +1,4 @@
-# Ender3V1-427-BLT — reproducible MRiscoC build for a monochrome-LCD Ender 3
+# Ender3V1-427-BLT - reproducible MRiscoC build for a monochrome-LCD Ender 3
 
 [Marlin 2.1.4 / MRiscoC Professional Firmware](https://github.com/mriscoc/Ender3V2S1) compiled for
 an **Ender 3 V1** with a **Creality v4.2.7** board, the **stock CR10 12864 monochrome LCD**,
@@ -9,7 +9,7 @@ a generic BLTouch clone, a direct-drive extruder and dual Z.
 MRiscoC ships prebuilt binaries, and for most Ender 3 V2 / S1 machines you never need a toolchain.
 **This hardware combination is not covered by any of them.** Every MRiscoC release targets the DWIN
 colour touchscreen. There is no release binary for a v4.2.7 board driving the stock 12864 monochrome
-LCD — the blue-and-white screen the V1 shipped with.
+LCD - the blue-and-white screen the V1 shipped with.
 
 So compiling is not a preference here. It is the only path to running this firmware on this display,
 and it shows up directly in the diff: **four of the twelve changed lines exist purely to select the
@@ -17,7 +17,7 @@ right screen** (`RET6_12864_LCD`, `CR10_STOCKDISPLAY`, `DWIN_LCD_PROUI` off, and
 timeout that the monochrome panel cannot support).
 
 Once you are compiling anyway, the second reason takes over: **being able to rebuild the exact binary
-that is running on the machine.** This is not a pile of tweaks — it is a closed, verified identity
+that is running on the machine.** This is not a pile of tweaks - it is a closed, verified identity
 chain.
 
 ```
@@ -41,7 +41,7 @@ match. That is what turns "I think this is what I flashed" into a verifiable fac
 
 | Subsystem | Component | Note |
 |---|---|---|
-| Board | Creality v4.2.7 | MCU is **STM32F103RE** — not RC. This decides the build environment |
+| Board | Creality v4.2.7 | MCU is **STM32F103RE** - not RC. This decides the build environment |
 | MCU | STM32F103RE, 512 KB flash | |
 | Display | **Stock CR10 12864 monochrome** | `RET6_12864_LCD` + `CR10_STOCKDISPLAY`. This is the reason for building from source |
 | Probe | **Generic BLTouch clone** | Not Antclabs. See the 5 V note below |
@@ -121,7 +121,7 @@ sha256sum .pio/build/STM32F103RE_creality/firmware.bin
    match.** This is the number one cause of "I flashed it and nothing changed".
 2. SD card formatted **FAT32**, **4096-byte** clusters, ideally ≤ 8 GB.
 3. `.bin` in the root, printer off, insert the card, power on.
-4. Wait ~15 s. The screen stays blank during the flash — that is normal.
+4. Wait ~15 s. The screen stays blank during the flash - that is normal.
 5. Confirm with `M115`.
 
 ### 5. Mandatory after flashing
@@ -133,14 +133,14 @@ M500   ; write them to EEPROM
 
 **Flashing does NOT clear the EEPROM.** It is non-volatile storage independent of the firmware, and
 at boot the EEPROM **overrides** the compiled defaults. Skip this and you are running the old values
-under new firmware — and you will spend hours debugging a configuration file the machine never read.
+under new firmware - and you will spend hours debugging a configuration file the machine never read.
 
 Analogy: compiling changes the spec sheet. The EEPROM is the adjustment somebody already made to the
 screw. Changing the paper does not turn the screw.
 
 Expected confirmation: `Settings Stored (778 bytes; crc <n>)`
 
-### 6. Recalibrate the Z offset — not optional
+### 6. Recalibrate the Z offset - not optional
 
 ```gcode
 G28                ; home all axes
@@ -164,7 +164,7 @@ who prints that bracket gets `X −43.65  Y −10.00`.
 
 Base: `configurations/Ender3V2-422-BLT/` from tag `Ender3V2S1-20260106`.
 
-### `Configuration.h` — 9 lines
+### `Configuration.h` - 9 lines
 
 | Directive | Value | Why |
 |---|---|---|
@@ -178,7 +178,7 @@ Base: `configurations/Ender3V2-422-BLT/` from tag `Ender3V2S1-20260106`.
 | `CR10_STOCKDISPLAY` | enabled | Stock monochrome panel |
 | `DWIN_LCD_PROUI` | **disabled** | This is for the DWIN colour screen on the V2 / S1. This machine is a V1 |
 
-### `Configuration_adv.h` — 3 lines
+### `Configuration_adv.h` - 3 lines
 
 | Directive | Value | Why |
 |---|---|---|
@@ -206,13 +206,13 @@ you document the machine by `FIRMWARE_NAME`, you are documenting something else.
 
 `Z_STEPPER_AUTO_ALIGN` requires **two independent drivers** so one motor can be moved relative to the
 other. With a splitter, both motors share a driver and receive identical step pulses: mechanically
-they are one axis. Gantry levelling is **manual** — loosen one coupler and turn that leadscrew by hand.
+they are one axis. Gantry levelling is **manual** - loosen one coupler and turn that leadscrew by hand.
 
 ### OrcaSlicer can contaminate the EEPROM
 
 OrcaSlicer emits `M201` / `M203` / `M204` in the header of **every** g-code file. On their own they
 are per-job and vanish at the next power cycle. But if the start g-code contains an `M500`, every
-print writes the slicer's limits to EEPROM permanently — and burns one write cycle of the emulated
+print writes the slicer's limits to EEPROM permanently - and burns one write cycle of the emulated
 flash. Neither piece is a fault by itself; the pair is.
 
 **Never put `M500` in start g-code.** To check for contamination, compare `M503` against this table:
@@ -229,7 +229,7 @@ If they do not match: `M502` + `M500`, and remove the `M500` from start g-code.
 ### Generic BLTouch and 5 V mode
 
 Clones are often 5 V-only, unlike the Antclabs v3.x which auto-detects. This build does **not** enable
-`BLTOUCH_SET_5V_MODE`. If your clone does not trigger reliably, that is the first switch to try — but
+`BLTOUCH_SET_5V_MODE`. If your clone does not trigger reliably, that is the first switch to try - but
 measure the signal pin voltage first: forcing 5 V onto a board expecting 3.3 V can damage the MCU input.
 
 ### Pasting multiple commands into a serial console
@@ -237,7 +237,7 @@ measure the signal pin voltage first: forcing 5 V onto a board expecting 3.3 V c
 Some consoles concatenate consecutive pasted lines into a single transmission. Marlin's parser takes
 the first valid code it finds on a line, executes it, replies `ok`, and **discards the rest silently**.
 `M420` followed by `G29` arrives as `M420G29`, the leveling state is reported, and the probe never
-runs — with no error anywhere. Send state-changing commands **one at a time**, waiting for each `ok`,
+runs - with no error anywhere. Send state-changing commands **one at a time**, waiting for each `ok`,
 and verify with `M503` rather than trusting the acknowledgement.
 
 ---
@@ -270,7 +270,7 @@ it tells you the measurement is trustworthy.
 > | two `G29` back to back, same session | **0.015 mm** | the machine, short term |
 > | two `G29` from different sessions | 0.063 mm | the machine, long term |
 >
-> Those are the thresholds for deciding whether a change between two meshes is real — not σ.
+> Those are the thresholds for deciding whether a change between two meshes is real - not σ.
 
 ---
 
@@ -300,12 +300,14 @@ sha256sum -c SHA256SUMS
 ### `docs/mesh-analysis.py`
 
 A large mesh range tells you nothing on its own, because it mixes two defects that are fixed in
-completely different ways: **tilt** (the bed or gantry mounted crooked — correctable with the
-levelling knobs or the Z axis) and **warp** (the plate itself not being flat — not correctable by
-tightening anything).
+completely different ways: **tilt** (the bed or gantry mounted crooked - correctable with the
+levelling knobs or the Z axis) and a **non-planar residual** (something in the bed-to-nozzle path
+that is not flat - the plate itself, or a bowed gantry or rail - not correctable by levelling).
 
-The script fits a least-squares plane to the mesh points and subtracts it. What is left — the
-residual — is the real non-planar error.
+The script fits a least-squares plane to the mesh points and subtracts it. What is left - the
+residual - is the real non-planar error. The probe travels with the nozzle, so the residual
+cannot tell plate warp from gantry shape on its own; separating those needs a second test (for
+example, rotating the plate 180° and probing again: plate warp rotates with it, gantry shape does not).
 
 ```bash
 # paste the `G29 W I.. J.. Z..` lines from M503 into a file
@@ -323,10 +325,12 @@ After equalising the Z leadscrews and re-tramming the corners:
 | Raw mesh range | 1.938 mm | **0.180 mm** |
 | Tilt along X | +9.79 mm/m | **+0.44 mm/m** |
 | Non-planar residual | 0.163 mm | **0.131 mm** |
-| Residual shape vs before | — | **r = 0.965** |
+| Residual shape vs before | - | **r = 0.965** |
 
 The tilt dropped 22×. The residual barely moved, and its map kept the same shape. That confirms the
-residual belongs to the plate, not to the assembly. What remains is compensated by the mesh.
+tilt was assembly, and that the residual belongs to something levelling does not touch: the plate or
+the gantry. Which of the two is still open (the rotation test above has not been run yet). Either
+way, what remains is compensated by the mesh.
 
 > A table with one short leg gets shimmed. A table with a warped top gets replaced. This one gets
 > shimmed.

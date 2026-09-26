@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-mesh-analysis.py - separate TILT from WARP in a Marlin bed mesh.
+mesh-analysis.py - separate TILT from the non-planar residual in a Marlin bed mesh.
 
 Why this matters
 ----------------
@@ -10,8 +10,11 @@ that are physically different and are fixed in completely different ways:
   * TILT: the bed or the gantry is mounted crooked, but as a plane.
     Fixed with the levelling knobs or by levelling the Z axis. It is assembly
     geometry.
-  * WARP: the plate itself is not flat. No amount of tightening fixes it.
-    It is material geometry.
+  * NON-PLANAR RESIDUAL: something between bed and nozzle is not flat - the
+    plate itself (warp) or a bowed gantry/rail. Levelling does not fix it.
+    The probe rides with the nozzle, so this script cannot tell those two
+    apart: rotate the plate 180 degrees and probe again. Plate warp rotates
+    with the plate; gantry shape stays put.
 
 Mechanical analogy: a four-legged table with one short leg wobbles, but its top
 is still flat - you shim it. A table with a bowed top is not fixed by shimming -
@@ -21,10 +24,10 @@ Method
 ------
 Least-squares plane fit (z = a*x + b*y + c) over the mesh points. Coefficients
 a and b are the tilt, in mm/m. The RESIDUAL - what is left after subtracting
-that plane - is the real non-planar error of the plate.
+that plane - is the real non-planar error (plate and/or gantry).
 
-A 2 mm range with a 0.17 mm residual is a flat plate that is badly mounted.
-A 0.4 mm range with a 0.35 mm residual is a warped plate.
+A 2 mm range with a 0.17 mm residual is a nearly flat surface that is badly mounted.
+A 0.4 mm range with a 0.35 mm residual is a surface that is not flat.
 The second case is far worse even though the headline number is smaller.
 
 Usage
@@ -135,20 +138,20 @@ def main():
     print(f"  total drop across Y: {b*(B-F):+.3f} mm")
 
     print()
-    print("-- residual (real WARP of the plate: NOT correctable by tightening) --")
+    print("-- residual (non-planar: plate warp and/or gantry shape; NOT fixed by levelling) --")
     print(f"  range   {max(res) - min(res):.4f} mm")
     print(f"  sigma   {st.pstdev(res):.4f} mm")
 
     frac = (max(res) - min(res)) / (max(flat) - min(flat)) if max(flat) != min(flat) else 0
     print()
     if frac < 0.25:
-        print(f"  => {(1-frac)*100:.0f}% of the error is tilt. The plate is fine;")
+        print(f"  => {(1-frac)*100:.0f}% of the error is tilt. The surface is nearly flat;")
         print("     the problem is assembly. Level it and measure again.")
     elif frac > 0.6:
-        print(f"  => {frac*100:.0f}% of the error is warp. Levelling will not fix this;")
-        print("     you need permanent mesh compensation or a new plate.")
+        print(f"  => {frac*100:.0f}% of the error is non-planar. Levelling will not fix this;")
+        print("     rely on mesh compensation, then test plate vs gantry before buying parts.")
     else:
-        print(f"  => mixed: {frac*100:.0f}% warp. Level first, then re-evaluate how")
+        print(f"  => mixed: {frac*100:.0f}% non-planar. Level first, then re-evaluate how")
         print("     much residual is left.")
 
     print()
