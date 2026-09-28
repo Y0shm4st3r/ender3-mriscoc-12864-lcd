@@ -335,6 +335,9 @@ way, what remains is compensated by the mesh.
 > A table with one short leg gets shimmed. A table with a warped top gets replaced. This one gets
 > shimmed.
 
+> Written with AI assistance (Claude); I verified the fit against numpy's least-squares
+> solver and can walk through the math. The measurements and conclusions are mine.
+
 ---
 
 ## Licence
