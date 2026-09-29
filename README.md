@@ -335,8 +335,23 @@ way, what remains is compensated by the mesh.
 > A table with one short leg gets shimmed. A table with a warped top gets replaced. This one gets
 > shimmed.
 
-> Written with AI assistance (Claude); I verified the fit against numpy's least-squares
-> solver and can walk through the math. The measurements and conclusions are mine.
+---
+
+## How this was made
+
+I did this build with Claude (Anthropic) as an assistant, and I want to be clear about the split.
+
+**Mine:** the hardware (direct-drive conversion, dual Z, BLTouch mount), choosing MRiscoC as the
+base, running into every trap listed above on the actual machine, flashing it, every measurement on
+this page (the meshes, `M48`, the session-to-session comparison) and the mechanical fixes that
+followed (equalising the Z leadscrews, re-tramming the corners).
+
+**Assisted:** working out which lines in `Configuration.h` / `Configuration_adv.h` had to change and
+editing them - at the time I did not know the firmware well enough to do that alone -
+`docs/mesh-analysis.py`, and much of the English write-up.
+
+The script's plane fit was checked against numpy's least-squares solver, and I can walk through
+why each of the 12 changed lines is there. If something here is unclear, ask me.
 
 ---
 
@@ -351,7 +366,7 @@ The upstream MRiscoC repository distributes its own `LICENSE` as **LGPL-2.1**. T
 files included here carry a **GPL-3.0** notice, which is what applies to this redistribution, and is
 the text shipped in `LICENSE`.
 
-`docs/mesh-analysis.py` is original code, published under the same GPL-3.0 so that there is only one
+`docs/mesh-analysis.py` was written for this repo (with AI assistance, see above) and is published under the same GPL-3.0 so that there is only one
 licence in the tree.
 
 - Marlin: https://github.com/MarlinFirmware/Marlin
